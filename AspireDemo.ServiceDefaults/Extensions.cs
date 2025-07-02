@@ -116,4 +116,16 @@ public static class Extensions
 
         return app;
     }
+
+    public static IServiceCollection AddApplicationTracing(
+        this IServiceCollection services,
+        Action<TracerProviderBuilder> configure)
+    {
+        services.AddOpenTelemetry().WithTracing(builder =>
+        {
+            configure(builder);
+        });
+
+        return services;
+    }
 }
