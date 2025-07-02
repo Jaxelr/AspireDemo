@@ -16,10 +16,9 @@ serviceBus.AddServiceBusQueue("message");
 serviceBus.RunAsEmulator(em => em.WithLifetime(ContainerLifetime.Persistent));
 
 // Storage
-var storage = builder.AddAzureStorage("storage")
-                   .RunAsEmulator(em => em.WithLifetime(ContainerLifetime.Persistent));
-
+var storage = builder.AddAzureStorage("storage");
 var blobs = storage.AddBlobs("blobs");
+storage.RunAsEmulator(em => em.WithLifetime(ContainerLifetime.Persistent));
 
 builder.AddProject<Projects.FrontendApi>("frontend")
     .WithReference(cosmos)
