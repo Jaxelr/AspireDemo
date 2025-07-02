@@ -11,9 +11,3 @@ public class Message
     public DateTime Timestamp { get; set; }
 }
 
-public enum Status
-{
-    InProgress,
-    Failed,
-    Success
-}
