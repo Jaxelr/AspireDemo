@@ -1,4 +1,5 @@
 using Azure.Provisioning.ServiceBus;
+using Azure.Provisioning.Storage;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -15,20 +16,23 @@ serviceBus.AddServiceBusQueue("message");
 serviceBus.RunAsEmulator(em => em.WithLifetime(ContainerLifetime.Persistent));
 
 // Storage
-var blobs = builder.AddAzureStorage("storage")
-                   .RunAsEmulator(em => em.WithLifetime(ContainerLifetime.Persistent))
-                   .AddBlobs("blobs");
+var storage = builder.AddAzureStorage("storage")
+                   .RunAsEmulator(em => em.WithLifetime(ContainerLifetime.Persistent));
+
+var blobs = storage.AddBlobs("blobs");
 
 builder.AddProject<Projects.FrontendApi>("frontend")
     .WithReference(cosmos)
     .WithReference(blobs)
     .WithReference(serviceBus)
-    .WithRoleAssignments(serviceBus, ServiceBusBuiltInRole.AzureServiceBusDataSender);
+    .WithRoleAssignments(serviceBus, ServiceBusBuiltInRole.AzureServiceBusDataSender)
+    .WithRoleAssignments(storage, StorageBuiltInRole.StorageBlobDataContributor);
 
 builder.AddProject<Projects.BackendService>("backend")
     .WithReference(cosmos)
     .WithReference(blobs)
     .WithReference(serviceBus)
-    .WithRoleAssignments(serviceBus, ServiceBusBuiltInRole.AzureServiceBusDataReceiver);
+    .WithRoleAssignments(serviceBus, ServiceBusBuiltInRole.AzureServiceBusDataReceiver)
+    .WithRoleAssignments(storage, StorageBuiltInRole.StorageBlobDataContributor);
 
 builder.Build().Run();
