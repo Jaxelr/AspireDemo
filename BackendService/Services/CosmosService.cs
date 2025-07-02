@@ -18,7 +18,7 @@ public class CosmosService
 
     public async Task<Profile?> GetProfile(string profileId)
     {
-        using var activity = activitySource.StartActivity("getProfile", ActivityKind.Internal);
+        using var activity = activitySource.StartActivity("getProfile", ActivityKind.Server);
         var query = new QueryDefinition("SELECT * FROM c WHERE c.id = @profileId").WithParameter("@profileId", profileId);
 
         using var iterator = container.GetItemQueryIterator<Profile>(query);

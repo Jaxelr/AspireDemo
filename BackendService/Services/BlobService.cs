@@ -6,7 +6,7 @@ namespace BackendService;
 
 public class BlobService
 {
-    private readonly ActivitySource activitySource = new("CosmosService");
+    private readonly ActivitySource activitySource = new("BlobService");
     private readonly ILogger<BlobService> logger;
     private readonly BlobContainerClient containerClient;
 
@@ -21,7 +21,7 @@ public class BlobService
 
     public async Task Store(string id, Result result)
     {
-        using var activity = activitySource.StartActivity("storeResult", ActivityKind.Internal);
+        using var activity = activitySource.StartActivity("storeResult", ActivityKind.Server);
 
         try
         {
